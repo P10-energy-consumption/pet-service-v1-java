@@ -3,6 +3,7 @@ package org.p10.PetStore.Controllers;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import com.google.gson.Gson;
 
 import org.p10.PetStore.Models.*;
 import org.p10.PetStore.Models.Pojo.PetPhotoPojo;
@@ -16,8 +17,10 @@ import java.util.UUID;
 public class PetController {
 
     private final PetRepository petRepository;
+    private final Gson gson;
 
     public PetController() {
+        this.gson = new Gson();
         this.petRepository = new PetRepository();
     }
 
@@ -26,7 +29,7 @@ public class PetController {
     @Produces("text/plain")
     public Response getPet(@PathParam("id") int petId) {
         Pet pet = petRepository.getPet(petId);
-        return Response.ok(pet).build();
+        return Response.ok(gson.toJson(pet)).build();
     }
 
     @POST
@@ -38,7 +41,7 @@ public class PetController {
                 petPojo.getTags(), PetStatus.values()[petPojo.getStatus()]);
         int rowId = petRepository.insertPet(pet);
         if (rowId > 0) {
-            return Response.ok(pet).build();
+            return Response.ok(rowId).build();
         } else {
             return Response.serverError().build();
         }
@@ -53,7 +56,7 @@ public class PetController {
                 petPojo.getTags(), PetStatus.values()[petPojo.getStatus()]);
         int affectedRows = petRepository.updatePet(pet);
         if (affectedRows > 0) {
-            return Response.ok().build();
+            return Response.ok(affectedRows).build();
         } else {
             return Response.serverError().build();
         }
@@ -68,7 +71,7 @@ public class PetController {
         int rowId = petRepository.insertPetPhoto(photoId, petPhotoPojo.getPetID(),
                 petPhotoPojo.getMetaData(), fileUrl);
         if (rowId > 0) {
-            return Response.ok().build();
+            return Response.ok(rowId).build();
         } else {
             return Response.serverError().build();
         }
@@ -80,7 +83,7 @@ public class PetController {
     public Response deletePet(@PathParam("petId") int petId) {
         int affectedRows = petRepository.deletePet(petId);
         if (affectedRows > 0) {
-            return Response.ok().build();
+            return Response.ok(affectedRows).build();
         } else {
             return Response.serverError().build();
         }
@@ -91,6 +94,6 @@ public class PetController {
     @Produces("text/plain")
     public Response getPetByStatus(@QueryParam("petStatus") int petStatus) {
         List<Pet> petList = petRepository.getPetByStatus(PetStatus.values()[petStatus]);
-        return Response.ok(petList).build();
+        return Response.ok(gson.toJson(petList)).build();
     }
 }
