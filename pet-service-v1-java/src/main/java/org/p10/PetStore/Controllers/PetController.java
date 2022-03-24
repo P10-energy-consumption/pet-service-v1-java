@@ -1,15 +1,16 @@
 package org.p10.PetStore.Controllers;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
-
-import org.p10.PetStore.Models.*;
+import org.p10.PetStore.Models.Pet;
+import org.p10.PetStore.Models.PetCategory;
+import org.p10.PetStore.Models.PetStatus;
 import org.p10.PetStore.Models.Pojo.PetPhotoPojo;
 import org.p10.PetStore.Models.Pojo.PetPojo;
 import org.p10.PetStore.Repositories.PetRepository;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class PetController {
 
     @GET
     @Path("/pet/{id}")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getPet(@PathParam("id") int petId) {
         Pet pet = petRepository.getPet(petId);
         return Response.ok(gson.toJson(pet)).build();
@@ -49,7 +50,7 @@ public class PetController {
 
     @PUT
     @Path("/pet")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response updatePet(PetPojo petPojo) {
         Pet pet = new Pet(petPojo.getId(), PetCategory.values()[petPojo.getCategory()],
                 petPojo.getName(), petPojo.getPhotoUrls(),
@@ -64,7 +65,7 @@ public class PetController {
 
     @POST
     @Path("/pet/{petId}/uploadImage")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response insertPetPhoto(PetPhotoPojo petPhotoPojo) {
         UUID photoId = UUID.randomUUID();
         String fileUrl = "/some/url/" + photoId;
@@ -79,7 +80,7 @@ public class PetController {
 
     @DELETE
     @Path("/pet/{petId}")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deletePet(@PathParam("petId") int petId) {
         int affectedRows = petRepository.deletePet(petId);
         if (affectedRows > 0) {
@@ -91,7 +92,7 @@ public class PetController {
 
     @GET
     @Path("/pet/findByStatus")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getPetByStatus(@QueryParam("petStatus") int petStatus) {
         List<Pet> petList = petRepository.getPetByStatus(PetStatus.values()[petStatus]);
         return Response.ok(gson.toJson(petList)).build();
