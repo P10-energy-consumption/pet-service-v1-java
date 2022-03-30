@@ -17,7 +17,7 @@ public class ConnectionFactory implements IConnectionFactory {
         try {
             Class.forName("org.postgresql.Driver");
             c = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/postgres",
+                    .getConnection("jdbc:postgresql://host.docker.internal:5432/postgres",
                             "postgres", "12345");
         } catch (Exception e) {
             e.printStackTrace();
